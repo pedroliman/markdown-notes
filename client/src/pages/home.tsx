@@ -20,11 +20,11 @@ export default function Home() {
   const [editingTitle, setEditingTitle] = useState("");
 
   const { data: notes = [], isLoading: isLoadingNotes } = useQuery<Note[]>({
-    queryKey: [searchQuery ? "/api/notes/search" : "/api/notes", searchQuery],
+    queryKey: [searchQuery ? "/api/notes/search" : "/api/notes", searchQuery] as const,
     queryFn: async ({ queryKey }) => {
-      const [path, query] = queryKey;
+      const [path, query] = queryKey as [string, string | undefined];
       const url = query ? `${path}?q=${encodeURIComponent(query)}` : path;
-      const res = await fetch(url);
+      const res = await fetch(url, { credentials: 'include' });
       if (!res.ok) throw new Error("Failed to fetch notes");
       return res.json();
     },
